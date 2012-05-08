@@ -34,7 +34,7 @@ LDFLAGS+=-framework Foundation -framework UIKit
 
 .PHONY: all bundleid clean device package
 
-all: $(EXECUTABLE_NAME)
+all: package
 
 bundleid:
 	@$(BASE_DIR)/sh/bundleid
