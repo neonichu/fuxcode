@@ -1,3 +1,4 @@
+BASE_DIR=..
 PRODUCT_NAME=Test
 
-include ../mak/ios.mak
+include $(BASE_DIR)/mak/ios.mak

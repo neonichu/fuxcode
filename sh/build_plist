@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Build binary plist from Info.plist
+
+PROD=`echo "$1"|cut -d- -f-1`
+
+sed -e "s/\${PRODUCT_NAME.*}/$PROD/g" \
+  -e "s/\${EXECUTABLE_NAME.*}/$PROD/g" "$1" >"$2" &&
+plutil -convert binary1 "$2"

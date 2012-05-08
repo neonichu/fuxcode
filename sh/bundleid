@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Determine Bundle-ID from Info.plist
+
+PLBUDDY=/usr/libexec/PlistBuddy
+
+PROD=`ls *-Info.plist|head -n 1|cut -d- -f-1`
+
+$PLBUDDY -c 'Print CFBundleIdentifier' *-Info.plist | \
+  sed "s/\${PRODUCT_NAME.*$/$PROD/"

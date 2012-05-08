@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Build IPA from App Bundle
+
+PLBUDDY=/usr/libexec/PlistBuddy
+
+BASE_DIR="`dirname $0`"
+BUNDLE_ID=`$PLBUDDY -c 'Print CFBundleIdentifier' "$1/Info.plist"`
+BUNDLE_NAME=`$PLBUDDY -c 'Print CFBundleName' "$1/Info.plist"`
+PROFILE="`"$BASE_DIR/find_provisioning_profile" $BUNDLE_ID`"
+
+xcrun -sdk iphoneos PackageApplication "$1" -o "$BUNDLE_NAME.ipa" \
+  --sign 'iPhone Distribution' --embed "$PROFILE"

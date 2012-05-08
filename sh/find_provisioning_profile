@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Find an Ad Hoc provisioning profile for a given App ID
+
+IFS=$'\n'
+for profile in `grep -l $1 $HOME/Library/MobileDevice/Provisioning\ Profiles/*`
+do
+  grep -a -A 1 get-task-allow "$profile"|grep 'false' >/dev/null
+  if [ $? -eq 0 ]
+  then
+    echo "$profile"
+    exit 0
+  fi
+done

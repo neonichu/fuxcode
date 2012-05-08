@@ -1,4 +1,5 @@
 *.o
 
 example/Test
+example/Test.app
 junk
