@@ -3,11 +3,16 @@
 # Build IPA from App Bundle
 
 PLBUDDY=/usr/libexec/PlistBuddy
+SIGN_AS='iPhone Distribution'
 
-BASE_DIR="`dirname $0`"
+BASE_DIR="`dirname $0`/.."
 BUNDLE_ID=`$PLBUDDY -c 'Print CFBundleIdentifier' "$1/Info.plist"`
 BUNDLE_NAME=`$PLBUDDY -c 'Print CFBundleName' "$1/Info.plist"`
-PROFILE="`"$BASE_DIR/find_provisioning_profile" $BUNDLE_ID`"
+ENTITLEMENTS=Entitlements.plist
+PROFILE="`"$BASE_DIR/sh/find_provisioning_profile" $BUNDLE_ID`"
 
-xcrun -sdk iphoneos PackageApplication "$1" -o "$BUNDLE_NAME.ipa" \
-  --sign 'iPhone Distribution' --embed "$PROFILE"
+cp "$BASE_DIR/rsc/ResourceRules.plist" "$1" &&
+$PLBUDDY -c 'Save' Entitlements.plist >/dev/null &&
+codesign -s "$SIGN_AS" --entitlements $ENTITLEMENTS "$1" &&
+xcrun -sdk iphoneos PackageApplication "$1" -o "$PWD/$BUNDLE_NAME.ipa" \
+  --sign "$SIGN_AS" --embed "$PROFILE" #-verbose

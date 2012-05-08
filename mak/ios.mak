@@ -32,6 +32,8 @@ CFLAGS=-ObjC -arch $(ARCH) -include $(PRODUCT_NAME)-Prefix.pch \
 LD=$(CC)
 LDFLAGS+=-framework Foundation -framework UIKit
 
+PLBUDDY=/usr/libexec/PlistBuddy
+
 .PHONY: all bundleid clean device package
 
 all: package
@@ -40,19 +42,19 @@ bundleid:
 	@$(BASE_DIR)/sh/bundleid
 
 clean:
-	rm -f $(EXECUTABLE_NAME) $(OBJS)
+	rm -f $(EXECUTABLE_NAME) $(OBJS) $(PRODUCT_NAME).ipa Entitlements.plist
+	@rm -f "$(PRODUCT_NAME).app/_CodeSignature"/*
+	@(rmdir "$(PRODUCT_NAME).app/_CodeSignature" 2>/dev/null; exit 0)
 	rm -f "$(PRODUCT_NAME).app"/*
-	rmdir "$(PRODUCT_NAME).app"
+	@(rmdir "$(PRODUCT_NAME).app" 2>/dev/null; exit 0)
 
 device: package
-	# 1. Build binary Info.plist
-	# 2. Build app bundle
-	# 3. Sign executable
-	# 4. Deploy to device
-	# 5. Debug using lldb
 
 package: $(EXECUTABLE_NAME) $(INFO_PLIST)
 	mkdir -p "$(PRODUCT_NAME).app"
+	@/bin/echo -n 'AAPL' > "$(PRODUCT_NAME).app/PkgInfo"
+	@$(PLBUDDY) -c 'Print CFBundleSignature' $(INFO_PLIST) \
+		>> "$(PRODUCT_NAME).app/PkgInfo"
 	cp $(EXECUTABLE_NAME) "$(PRODUCT_NAME).app"
 	$(BASE_DIR)/sh/build_plist $(INFO_PLIST) "$(PRODUCT_NAME).app/Info.plist"
 	$(BASE_DIR)/sh/build_ipa "$(PRODUCT_NAME).app"

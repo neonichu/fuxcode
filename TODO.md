@@ -1,1 +1,2 @@
-* error: Failed to read entitlements from ...
+* Deploy to device automatically.
+* Run in lldb for debugging.

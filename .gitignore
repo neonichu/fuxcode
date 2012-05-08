@@ -1,5 +1,7 @@
 *.o
 
+example/Entitlements.plist
 example/Test
 example/Test.app
+example/Test.ipa
 junk
