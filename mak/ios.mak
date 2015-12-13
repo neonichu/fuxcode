@@ -54,6 +54,7 @@ LD=$(CC)
 LDFLAGS+=-framework Foundation -framework UIKit
 
 PLBUDDY=/usr/libexec/PlistBuddy
+SIM=/Library/RubyMotion/bin/ios/sim
 
 .PHONY: all bundleid clean device package
 
@@ -63,13 +64,19 @@ bundleid:
 	@$(BASE_DIR)/sh/bundleid
 
 clean:
-	rm -f $(EXECUTABLE_NAME) $(OBJS) $(PRODUCT_NAME).ipa Entitlements.plist
+	rm -f $(EXECUTABLE_NAME) $(OBJS) $(PRODUCT_NAME).ipa \
+		Entitlements.plist .repl_history
 	@rm -f "$(PRODUCT_NAME).app/_CodeSignature"/*
 	@(rmdir "$(PRODUCT_NAME).app/_CodeSignature" 2>/dev/null; exit 0)
 	rm -f "$(PRODUCT_NAME).app"/*
 	@(rmdir "$(PRODUCT_NAME).app" 2>/dev/null; exit 0)
 
 device: package
+ifeq ($(SIMULATOR),1)
+	$(SIM) 2 1 $(SIMULATED_DEVICE) $(SDK_VERSION) "$(DEVELOPER_PATH)" "$(PRODUCT_NAME).app"
+else
+	echo "Running on devices is not yet supported."
+endif
 
 package: $(EXECUTABLE_NAME) $(INFO_PLIST)
 	mkdir -p "$(PRODUCT_NAME).app"

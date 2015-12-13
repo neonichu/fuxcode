@@ -1,4 +1,6 @@
 BASE_DIR=..
 PRODUCT_NAME=Test
+SIMULATOR=1
+#SIMULATED_DEVICE="iPhone 6"
 
 include $(BASE_DIR)/mak/ios.mak
