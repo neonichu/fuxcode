@@ -22,7 +22,7 @@ ARCH=armv7
 endif
 
 ifndef SDK
-SDK=iPhoneOS8.1.sdk
+SDK=iPhoneOS9.2.sdk
 endif
 
 CC=clang
