@@ -15,14 +15,35 @@ SRCS=$(wildcard *.m)
 OBJS=$(patsubst %.m,%.o,$(SRCS))
 
 DEVELOPER_PATH=$(shell xcode-select -print-path)
-IOS_SDK=$(DEVELOPER_PATH)/Platforms/iPhoneOS.platform/Developer/SDKs
+PLATFORM_DIR=$(DEVELOPER_PATH)/Platforms
 
-ifndef ARCH
-ARCH=armv7
+ifeq ($(SIMULATOR),1)
+IOS_SDK=$(PLATFORM_DIR)/iPhoneSimulator.platform/Developer/SDKs
+else
+IOS_SDK=$(PLATFORM_DIR)/iPhoneOS.platform/Developer/SDKs
 endif
 
-ifndef SDK
-SDK=iPhoneOS9.2.sdk
+ifndef ARCH
+ifeq ($(SIMULATOR),1)
+ARCH=x86_64
+else
+ARCH=armv7
+endif
+endif
+
+# FIXME: the SDK version should be automatically determined
+ifndef SDK_VERSION
+SDK_VERSION=9.2
+endif
+
+ifeq ($(SIMULATOR),1)
+SDK=iPhoneSimulator$(SDK_VERSION).sdk
+else
+SDK=iPhoneOS$(SDK_VERSION).sdk
+endif
+
+ifndef SIMULATED_DEVICE
+SIMULATED_DEVICE="iPhone 5s"
 endif
 
 CC=clang
